@@ -1,0 +1,7 @@
+venv/
+__pycache__/
+.env
+*.pyc
+.ipynb_checkpoints/
+ML_module/data/
+ML_module/IoT-Project/
