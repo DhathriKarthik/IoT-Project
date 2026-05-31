@@ -6,6 +6,50 @@ const predictionNote = document.getElementById('predictionNote');
 const readingCount = document.getElementById('readingCount');
 const requestStatus = document.getElementById('requestStatus');
 
+// Realtime socket (updates when hardware posts to backend)
+let socket;
+try {
+  socket = io();
+  socket.on('connect', () => console.log('Realtime connected:', socket.id));
+  socket.on('new-reading', (record) => {
+    try {
+      // Prepend new record to history table
+      if (historyBody.querySelector('.empty')) historyBody.innerHTML = '';
+
+      const prediction = record.prediction?.predicted_kw;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${new Date(record.timestamp).toLocaleString()}</td>
+        <td>${record.features.Voltage.toFixed(2)}</td>
+        <td>${record.features.Global_intensity.toFixed(2)}</td>
+        <td>${record.features.Hour}</td>
+        <td>${record.features.DayOfWeek}</td>
+        <td>${record.features.RollingMean_3hr.toFixed(2)}</td>
+        <td>${prediction === undefined || prediction === null ? 'Pending' : `${Number(prediction).toFixed(3)} kW`}</td>
+      `;
+      historyBody.prepend(tr);
+
+      // Update counts and latest panel
+      readingCount.textContent = String(Number(readingCount.textContent || '0') + 1);
+      if (record.prediction) {
+        const latest = formatPrediction(record);
+        predictionValue.textContent = latest.value;
+        predictionNote.textContent = latest.note;
+        requestStatus.textContent = 'Predicted';
+      } else {
+        predictionNote.textContent = 'New reading received (prediction pending)';
+        requestStatus.textContent = 'Stored only';
+      }
+    } catch (e) {
+      console.error('Realtime update error', e);
+      loadHistory();
+    }
+  });
+} catch (e) {
+  // socket.io script may not be available in some contexts
+  console.warn('Realtime socket not available', e.message);
+}
+
 function formatPrediction(record) {
   if (!record || !record.prediction) {
     return { value: '—', note: 'No prediction returned yet.' };

@@ -4,6 +4,7 @@ const path = require('path');
 const { randomUUID } = require('crypto');
 const express = require('express');
 const cors = require('cors');
+const http = require('http');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
@@ -16,6 +17,11 @@ const dataFile = path.join(dataDir, 'readings.json');
 app.use(cors());
 app.use(express.json());
 app.use(express.static(frontendRoot));
+
+// Create HTTP server and attach Socket.IO for realtime updates
+const server = http.createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(server, { cors: { origin: '*' } });
 
 function ensureStorage() {
   if (!fs.existsSync(dataDir)) {
@@ -115,17 +121,26 @@ app.post('/api/readings', async (request, response) => {
     allReadings.push(record);
     await writeReadings(allReadings);
 
+    // Emit the newly stored reading (prediction may be pending)
+    try { io.emit('new-reading', record); } catch (e) { /* no-op */ }
+
     try {
       const prediction = await predictWithModel(features);
       record.prediction = prediction;
       allReadings[allReadings.length - 1] = record;
       await writeReadings(allReadings);
 
+      // Emit the updated record with prediction
+      try { io.emit('new-reading', record); } catch (e) { /* no-op */ }
+
       response.status(201).json(record);
     } catch (predictionError) {
       record.predictionError = predictionError.message;
       allReadings[allReadings.length - 1] = record;
       await writeReadings(allReadings);
+
+      // Emit the updated record with prediction error
+      try { io.emit('new-reading', record); } catch (e) { /* no-op */ }
 
       response.status(502).json({
         message: 'Sensor data stored, but the ML model could not be reached.',
@@ -144,7 +159,13 @@ app.get('/', (_request, response) => {
   response.sendFile(path.join(frontendRoot, 'index.html'));
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Backend running on http://localhost:${PORT}`);
   console.log(`Proxying predictions to ${ML_SERVICE_URL}`);
+});
+
+// Optional: log socket connections
+io.on('connection', (socket) => {
+  console.log('Socket connected:', socket.id);
+  socket.on('disconnect', () => console.log('Socket disconnected:', socket.id));
 });
