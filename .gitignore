@@ -1,0 +1,15 @@
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment files
+.env
+.env.*
+
+# Build / editor artifacts
+.DS_Store
+.ipynb_checkpoints/
