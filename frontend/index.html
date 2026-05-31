@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IoT Energy Prediction Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Node backend + Python ML</p>
+        <h1>Smart Energy Meter with Peak Demand Forecasting System</h1>
+        <p class="lede">Send sensor readings to the backend. The server stores each record, forwards the five model features to the ML service, and returns peak-demand forecasts for the dashboard.</p>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <div class="panel-heading">
+          <h2>Sensor Input</h2>
+          <span class="pill" id="apiState">Checking backend...</span>
+        </div>
+        <form id="sensorForm" class="form">
+          <label>
+            <span>Voltage</span>
+            <input type="number" step="0.01" name="Voltage" value="235.2" required>
+          </label>
+          <label>
+            <span>Global intensity</span>
+            <input type="number" step="0.01" name="Global_intensity" value="18.4" required>
+          </label>
+          <label>
+            <span>Hour</span>
+            <input type="number" min="0" max="23" step="1" name="Hour" value="14" required>
+          </label>
+          <label>
+            <span>Day of week</span>
+            <input type="number" min="0" max="6" step="1" name="DayOfWeek" value="2" required>
+          </label>
+          <label>
+            <span>Rolling mean 3hr</span>
+            <input type="number" step="0.01" name="RollingMean_3hr" value="1.78" required>
+          </label>
+          <button type="submit">Store reading and predict</button>
+        </form>
+      </article>
+
+      <article class="panel prediction-panel">
+        <div class="panel-heading">
+          <h2>Latest Prediction</h2>
+          <span class="pill muted">Realtime</span>
+        </div>
+        <div class="prediction-value" id="predictionValue">No prediction yet</div>
+        <p class="prediction-note" id="predictionNote">Submit a reading to store it and request a prediction from the model.</p>
+        <dl class="metrics">
+          <div>
+            <dt>Stored readings</dt>
+            <dd id="readingCount">0</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd id="requestStatus">Idle</dd>
+          </div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="panel-heading">
+        <h2>Saved Sensor History</h2>
+        <span class="pill muted">Backend log</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Voltage</th>
+              <th>Intensity</th>
+              <th>Hour</th>
+              <th>Day</th>
+              <th>Rolling mean</th>
+              <th>Prediction</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr>
+              <td colspan="7" class="empty">No sensor readings stored yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

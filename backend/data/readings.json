@@ -1,0 +1,58 @@
+[
+  {
+    "id": "1e1960cc-04ac-4bbc-98ee-11ee0c50aea2",
+    "timestamp": "2026-05-31T05:02:54.825Z",
+    "features": {
+      "Voltage": 235.2,
+      "Global_intensity": 18.4,
+      "Hour": 14,
+      "DayOfWeek": 2,
+      "RollingMean_3hr": 1.78
+    },
+    "prediction": {
+      "predicted_kw": 2.6
+    }
+  },
+  {
+    "id": "7da73e34-7bfa-4278-a473-8df75e3c5430",
+    "timestamp": "2026-05-31T05:04:11.227Z",
+    "features": {
+      "Voltage": 235.2,
+      "Global_intensity": 18.4,
+      "Hour": 14,
+      "DayOfWeek": 2,
+      "RollingMean_3hr": 1.78
+    },
+    "prediction": {
+      "predicted_kw": 2.6
+    }
+  },
+  {
+    "id": "bbb08441-5288-4c25-a851-e7c649501e2a",
+    "timestamp": "2026-05-31T05:04:12.780Z",
+    "features": {
+      "Voltage": 235.2,
+      "Global_intensity": 18.4,
+      "Hour": 14,
+      "DayOfWeek": 2,
+      "RollingMean_3hr": 1.78
+    },
+    "prediction": {
+      "predicted_kw": 2.6
+    }
+  },
+  {
+    "id": "ac8aa8cb-6ec6-4765-a4b0-2da56e2a3f64",
+    "timestamp": "2026-05-31T05:04:13.895Z",
+    "features": {
+      "Voltage": 235.2,
+      "Global_intensity": 18.4,
+      "Hour": 14,
+      "DayOfWeek": 2,
+      "RollingMean_3hr": 1.78
+    },
+    "prediction": {
+      "predicted_kw": 2.6
+    }
+  }
+]
